@@ -1696,37 +1696,39 @@ if (application.commandLineArguments.values.type === "email") {
                   );
                 `,
               );
-            const deletedFeedEntries = application.database.all<{
-              id: number;
-              externalId: string;
-              title: string;
-              content: string;
-            }>(
-              sql`
-                select "id", "externalId", "title", "content"
-                from "feedEntries"
-                where "feed" = ${feed.id}
-                order by "id" asc;
-              `,
-            );
-            let feedLength = 0;
-            while (deletedFeedEntries.length > 0) {
-              const feedEntry = deletedFeedEntries.pop()!;
-              feedLength += feedEntry.title.length + feedEntry.content.length;
-              if (feedLength > 2 ** 19) break;
-            }
-            for (const deletedFeedEntry of deletedFeedEntries) {
-              application.database.run(
-                sql`
-                  delete from "feedEntryEnclosureLinks" where "feedEntry" = ${deletedFeedEntry.id};
-                `,
-              );
-              application.database.run(
-                sql`
-                  delete from "feedEntries" where "id" = ${deletedFeedEntry.id};
-                `,
-              );
-            }
+
+            // const deletedFeedEntries = application.database.all<{
+            //   id: number;
+            //   externalId: string;
+            //   title: string;
+            //   content: string;
+            // }>(
+            //   sql`
+            //     select "id", "externalId", "title", "content"
+            //     from "feedEntries"
+            //     where "feed" = ${feed.id}
+            //     order by "id" asc;
+            //   `,
+            // );
+            // let feedLength = 0;
+            // while (deletedFeedEntries.length > 0) {
+            //   const feedEntry = deletedFeedEntries.pop()!;
+            //   feedLength += feedEntry.title.length + feedEntry.content.length;
+            //   if (feedLength > 2 ** 19) break;
+            // }
+            // for (const deletedFeedEntry of deletedFeedEntries) {
+            //   application.database.run(
+            //     sql`
+            //       delete from "feedEntryEnclosureLinks" where "feedEntry" = ${deletedFeedEntry.id};
+            //     `,
+            //   );
+            //   application.database.run(
+            //     sql`
+            //       delete from "feedEntries" where "id" = ${deletedFeedEntry.id};
+            //     `,
+            //   );
+            // }
+
             for (const feedWebSubSubscription of application.database.all<{
               id: number;
             }>(
