@@ -1768,12 +1768,6 @@ if (application.commandLineArguments.values.type === "email") {
               session.envelope.mailFrom === false
                 ? ""
                 : session.envelope.mailFrom.address,
-              "DELETED ENTRIES",
-              JSON.stringify(
-                deletedFeedEntries.map(
-                  (deletedFeedEntry) => deletedFeedEntry.externalId,
-                ),
-              ),
             );
           });
       } catch (error) {
